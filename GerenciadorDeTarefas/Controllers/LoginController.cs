@@ -1,4 +1,6 @@
 ﻿using GerenciadorDeTarefas.Dtos;
+using GerenciadorDeTarefas.Models;
+using GerenciadorDeTarefas.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -40,11 +42,22 @@ namespace GerenciadorDeTarefas.Controllers
                         Erro = "Parametro de entrada inválidos"
                     });
                 }
+
+                var usuarioTeste = new Usuario()
+                {
+                    Id = 1,
+                    Nome = "Usuário de Teste",
+                    Email = LoginTeste,
+                    Senha = SenhaTeste
+
+                };
+
+                var token = TokenService.CriarToken(usuarioTeste);
                 return Ok(new LoginRespostaDto()
                 {
                     Email = LoginTeste,
                     Nome = "Usuário de Teste",
-                    Token = ""
+                    Token = token
 
                 });
                 
