@@ -73,6 +73,13 @@ namespace GerenciadorDeTarefas
 
             app.UseRouting();
 
+            app.UseCors(cors =>
+            
+            cors.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+            
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
