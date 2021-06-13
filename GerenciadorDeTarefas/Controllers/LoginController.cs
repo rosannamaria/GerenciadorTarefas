@@ -18,7 +18,7 @@ namespace GerenciadorDeTarefas.Controllers
     {
         private readonly ILogger<LoginController> _logger;
 
-        private readonly string LoginTeste = "Admin";
+        private readonly string LoginTeste = "admin";
         private readonly string SenhaTeste = "123";
 
         public LoginController(ILogger<LoginController> logger)
