@@ -16,17 +16,17 @@ namespace GerenciadorDeTarefas.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginController : ControllerBase
+    public class LoginController : BaseController
     {
         private readonly ILogger<LoginController> _logger;
 
-        private readonly IUsuarioRepository _usuarioRepository;
+     
         
 
-        public LoginController(ILogger<LoginController> logger, IUsuarioRepository usuarioRepository)
+        public LoginController(ILogger<LoginController> logger, IUsuarioRepository usuarioRepository): base(usuarioRepository)
         {
             _logger = logger;
-            _usuarioRepository = usuarioRepository;
+            
         }
 
         [HttpPost]
@@ -61,10 +61,10 @@ namespace GerenciadorDeTarefas.Controllers
                 
 
             }
-            catch (Exception excessao)
+            catch (Exception excecao)
 
             {
-                _logger.LogError($"Ocorreu erro no Login: Login = {requisicao.Login} e Senha = {requisicao.Senha}", excessao, requisicao);
+                _logger.LogError($"Ocorreu erro no Login: Login = {requisicao.Login} e Senha = {requisicao.Senha}", excecao);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErroRespostaDto()
                 {
                     Status = StatusCodes.Status500InternalServerError,

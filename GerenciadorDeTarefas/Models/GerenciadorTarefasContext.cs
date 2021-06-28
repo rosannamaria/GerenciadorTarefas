@@ -13,6 +13,7 @@ namespace GerenciadorDeTarefas.Models
 
         }
         public DbSet<Usuario> Usuario { get; set; }
+        public DbSet<Tarefa> Tarefa { get; set; }
         
     }
 }

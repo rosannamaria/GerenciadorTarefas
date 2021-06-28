@@ -16,15 +16,13 @@ namespace GerenciadorDeTarefas.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsuarioController : ControllerBase
+    public class UsuarioController : BaseController
     {
         private readonly ILogger<UsuarioController> _logger;
-        private readonly IUsuarioRepository _usuarioRepository;
 
-        public UsuarioController (ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository)
+        public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository) : base(usuarioRepository)
         {
             _logger = logger;
-            _usuarioRepository = usuarioRepository;
         }
 
         [HttpPost]
@@ -34,57 +32,54 @@ namespace GerenciadorDeTarefas.Controllers
             try
             {
                 var erros = new List<string>();
-                if (string.IsNullOrEmpty(usuario.Nome) || string.IsNullOrWhiteSpace(usuario.Nome) || usuario.Nome.Length < 2)
-                   
+                if (string.IsNullOrEmpty(usuario.Nome) || string.IsNullOrWhiteSpace(usuario.Nome)
+                    || usuario.Nome.Length < 2)
                 {
-                    erros.Add("Nome Inválido");
+                    erros.Add("Nome inválido");
                 }
 
-                if (string.IsNullOrEmpty(usuario.Senha) || string.IsNullOrWhiteSpace(usuario.Senha) || usuario.Senha.Length < 4 &&
-                    Regex.IsMatch(usuario.Senha, "[a-zA-Z0-9]+", RegexOptions.IgnoreCase))
+                if (string.IsNullOrEmpty(usuario.Senha) || string.IsNullOrWhiteSpace(usuario.Senha)
+                    || usuario.Senha.Length < 4 && Regex.IsMatch(usuario.Senha, "[a-zA-Z0-9]+", RegexOptions.IgnoreCase))
                 {
-                    erros.Add("Senha Inválida");
+                    erros.Add("Senha inválida");
                 }
-                Regex regex = new Regex(@"^([\w\.\-\+\D]+)@([\w\-]+)((\.(\w){2,3})+)$");
-                if (string.IsNullOrWhiteSpace(usuario.Email) || string.IsNullOrEmpty(usuario.Email)
+
+                Regex regex = new Regex(@"^([\w\.\-\+\d]+)@([\w\-]+)((\.(\w){2,4})+)$");
+                if (string.IsNullOrEmpty(usuario.Email) || string.IsNullOrWhiteSpace(usuario.Email)
                     || !regex.Match(usuario.Email).Success)
-
                 {
-                    erros.Add("E-mail inválido");
+                    erros.Add("Email inválido");
                 }
+
                 if (_usuarioRepository.ExisteUsuarioPeloEmail(usuario.Email))
                 {
-                    erros.Add("Já existe um usuário com esse E-mail");
+                    erros.Add("Já existe uma conta com o email informado");
                 }
 
                 if (erros.Count > 0)
                 {
                     return BadRequest(new ErroRespostaDto()
-
                     {
                         Status = StatusCodes.Status400BadRequest,
                         Erros = erros
-                    
-                        });
-            }
-               usuario.Email =  usuario.Email.ToLower();
+                    });
+                }
+
+                usuario.Email = usuario.Email.ToLower();
                 usuario.Senha = MD5Utils.GerarHashMD5(usuario.Senha);
                 _usuarioRepository.Salvar(usuario);
-            
 
-                return Ok(usuario);
-
+                return Ok(new { msg = "Usuário Criado com sucesso" });
             }
             catch (Exception e)
             {
-                _logger.LogError("Ocorreu erro ao Salvar Usuário", e);
+                _logger.LogError("Ocorreu erro ao salvar usuário", e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErroRespostaDto()
                 {
                     Status = StatusCodes.Status500InternalServerError,
-                    Erro = "Ocorreu erro ao Salvar Usuário"
+                    Erro = "Ocorreu erro ao salvar usuário, tente novamente!"
                 });
             }
         }
-
     }
 }

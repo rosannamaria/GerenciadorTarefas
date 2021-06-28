@@ -8,7 +8,6 @@ namespace GerenciadorDeTarefas.Repository.Impl
 {
     public class UsuarioRepositoryImpl : IUsuarioRepository
     {
-
         private readonly GerenciadorTarefasContext _contexto;
         public UsuarioRepositoryImpl(GerenciadorTarefasContext contexto)
         {
@@ -17,7 +16,12 @@ namespace GerenciadorDeTarefas.Repository.Impl
 
         public bool ExisteUsuarioPeloEmail(string email)
         {
-          return  _contexto.Usuario.Any(usuario => usuario.Email.ToLower() == email.ToLower());
+            return _contexto.Usuario.Any(usuario => usuario.Email.ToLower() == email.ToLower());
+        }
+
+        public Usuario GetById(int idUsuario)
+        {
+            return _contexto.Usuario.FirstOrDefault(usuario => usuario.Id == idUsuario);
         }
 
         public Usuario GetUsuarioByLoginSenha(string login, string senha)
