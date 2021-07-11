@@ -29,7 +29,7 @@ namespace GerenciadorDeTarefas.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public IActionResult AdicionarTarefa([FromBody] Tarefa tarefa)
         {
             try
